@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>xsiset vpn · VPN без границ</title>
+<meta name="description" content="xsiset vpn: пять серверов в Европе, обход белых списков, оплата картой и криптой на сайте, ключ файлом .txt сразу после оплаты." />
+<meta name="theme-color" content="#000000" />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="xsiset vpn" />
+<meta property="og:title" content="xsiset vpn · VPN без границ" />
+<meta property="og:description" content="Пять серверов в Европе, обход белых списков, оплата картой и криптой, ключ файлом." />
+<meta property="og:locale" content="ru_RU" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23000000'/%3E%3Cpath d='M32 13l15 6v11c0 10-6.3 17.8-15 21-8.7-3.2-15-11-15-21V19l15-6z' fill='none' stroke='%23f5f5f7' stroke-width='4' stroke-linejoin='round'/%3E%3Cpath d='M25 32l5 5 10-10' fill='none' stroke='%232997ff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+
+<script>try{if(localStorage.getItem('xsisetvpn-theme')==='light')document.documentElement.setAttribute('data-theme','light')}catch(e){}document.documentElement.className += ' js';setTimeout(function(){if(!document.documentElement.classList.contains('js-ready')){document.documentElement.classList.add('js-safe')}},2500);</script>
+<link rel="stylesheet" href="style.css?v=20261101c" />
+</head>
+<body>
+
+<a class="skip" href="#top" data-i18n="a11y.skip">К содержимому</a>
+
+<!-- ================= HEADER ================= -->
+<header class="hdr" id="hdr">
+  <div class="wrap hdr__in">
+    <a class="brand" href="#top">
+      <span class="brand__name" data-i18n="brand">xsiset</span>
+      <span class="brand__tag">vpn</span>
+    </a>
+
+    <nav class="nav" id="nav">
+      <a href="#servers" data-i18n="nav.servers">Серверы</a>
+      <a href="#features" data-i18n="nav.features">Возможности</a>
+      <a href="#pricing" data-i18n="nav.pricing">Тарифы</a>
+      <a href="#account" data-i18n="nav.account">Мои ключи</a>
+      <a href="#faq" data-i18n="nav.faq">Вопросы</a>
+    </nav>
+
+    <div class="hdr__right">
+      <div class="lang" role="group" aria-label="Язык" data-i18n-aria="aria.lang">
+        <button type="button" class="lang__btn is-active" data-lang="ru" aria-pressed="true">RU</button>
+        <button type="button" class="lang__btn" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <button type="button" class="theme-btn" id="themeBtn" aria-label="Сменить тему" data-i18n-aria="aria.theme">
+        <svg class="theme-btn__sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.8v2.2M12 19v2.2M2.8 12H5M19 12h2.2M5.5 5.5l1.6 1.6M16.9 16.9l1.6 1.6M18.5 5.5l-1.6 1.6M7.1 16.9l-1.6 1.6"/></svg>
+        <svg class="theme-btn__moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.2A8.2 8.2 0 0 1 9.8 4a8.2 8.2 0 1 0 10.2 10.2Z"/></svg>
+      </button>
+      <a class="hdr__cta" href="#pricing" data-i18n="nav.cta">Подключиться</a>
+      <button type="button" class="burger" id="burger" aria-label="Меню" data-i18n-aria="aria.menu" aria-expanded="false" aria-controls="nav">
+        <span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="top" tabindex="-1">
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="wrap">
+    <p class="hero__badge reveal">
+      <span class="status status--live"><i></i><span data-i18n="hero.live">5 серверов онлайн</span></span>
+      <span class="hero__badge-sep" aria-hidden="true"></span>
+      <span data-i18n="hero.badge">обход белых списков</span>
+    </p>
+
+    <h1 class="hero__title">
+      <span class="hero__line"><span data-i18n="hero.t1">Интернет</span></span>
+      <span class="hero__line"><span data-i18n="hero.t2">без границ.</span></span>
+    </h1>
+
+    <p class="hero__tagline" data-i18n="hero.text">
+      Пять серверов в Европе. Оплата на сайте, ключ — файлом .txt.
+    </p>
+
+    <div class="hero__actions">
+      <a class="btn btn--primary" href="#pricing" data-i18n="hero.cta1">Выбрать тариф</a>
+      <a class="link-cta" href="https://t.me/xsisetvpnbot" target="_blank" rel="noopener" data-i18n="hero.cta2">Открыть бота</a>
+    </div>
+
+    <div class="hero__visual">
+      <div class="term" role="img" aria-label="Список серверов xsiset vpn" data-i18n-aria="aria.term">
+        <div class="term__bar">
+          <span class="term__name">xsiset vpn</span>
+          <span class="term__state" data-i18n="term.state">5 серверов</span>
+        </div>
+        <div class="term__body">
+          <p><span class="c-ok">●</span> <span data-i18n="servers.nl">Нидерланды</span> <span class="c-mut">1</span></p>
+          <p><span class="c-ok">●</span> <span data-i18n="servers.se">Швеция</span> <span class="c-mut">2</span></p>
+          <p><span class="c-ok">●</span> <span data-i18n="servers.de">Германия</span> <span class="c-mut">1</span></p>
+          <p><span class="c-ok">●</span> <span data-i18n="servers.wl">Обход белых списков</span> <span class="c-mut">1</span></p>
+          <p class="term__line"><span class="c-p">$</span> <span class="c-mut">t.me/xsisetvpnbot</span> <span class="c-cursor" aria-hidden="true"></span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SERVERS ================= -->
+<section class="sec" id="servers">
+  <div class="wrap">
+    <header class="sec__head reveal">
+      <h2 data-i18n="servers.title">Серверы в Европе</h2>
+      <p class="lead" data-i18n="servers.text">
+        Один тариф открывает все узлы. Отдельный сервер — для обхода белых списков.
+      </p>
+    </header>
+
+    <div class="node-grid">
+      <article class="node reveal">
+        <div class="node__top">
+          <span class="node__code">NL</span>
+          <span class="status status--live"><i></i><span data-i18n="node.online">доступен</span></span>
+        </div>
+        <h3 data-i18n="servers.nl">Нидерланды</h3>
+        <p data-i18n="servers.nl.d">Выход в интернет через Нидерланды.</p>
+        <span class="node__count" data-i18n="servers.one">1 сервер</span>
+      </article>
+
+      <article class="node reveal" style="--d:60ms">
+        <div class="node__top">
+          <span class="node__code">SE</span>
+          <span class="status status--live"><i></i><span data-i18n="node.online">доступен</span></span>
+        </div>
+        <h3 data-i18n="servers.se">Швеция</h3>
+        <p data-i18n="servers.se.d">Два отдельных сервера в Швеции.</p>
+        <span class="node__count" data-i18n="servers.two">2 сервера</span>
+      </article>
+
+      <article class="node reveal" style="--d:120ms">
+        <div class="node__top">
+          <span class="node__code">DE</span>
+          <span class="status status--live"><i></i><span data-i18n="node.online">доступен</span></span>
+        </div>
+        <h3 data-i18n="servers.de">Германия</h3>
+        <p data-i18n="servers.de.d">Выход в интернет через Германию.</p>
+        <span class="node__count" data-i18n="servers.one">1 сервер</span>
+      </article>
+
+      <article class="node node--accent reveal" style="--d:180ms">
+        <div class="node__top">
+          <span class="node__code">WL</span>
+          <span class="status status--live"><i></i><span data-i18n="node.online">доступен</span></span>
+        </div>
+        <h3 data-i18n="servers.wl">Обход белых списков</h3>
+        <p data-i18n="servers.wl.d">Для случаев, когда обычный VPN не проходит по белым спискам.</p>
+        <span class="node__count" data-i18n="servers.one">1 сервер</span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FEATURES ================= -->
+<section class="sec" id="features">
+  <div class="wrap">
+    <header class="sec__head reveal">
+      <h2 data-i18n="feat.title">Всё на сайте</h2>
+      <p class="lead" data-i18n="feat.text">
+        Выбор тарифа, оплата, выдача ключа и поддержка — без посредников.
+      </p>
+    </header>
+
+    <div class="feat-grid">
+      <article class="feat reveal">
+        <span class="feat__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="3"/><path d="M2.5 9.5h19M6 15h4"/></svg>
+        </span>
+        <h3 data-i18n="feat.pay.t">Карта и крипта</h3>
+        <p data-i18n="feat.pay.d">CryptoBot: USDT, TRX, TON. Platega: карта и СБП. Счёт создаётся на сайте.</p>
+      </article>
+
+      <article class="feat reveal" style="--d:60ms">
+        <span class="feat__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7.5 3v5.6c0 4.8-3.2 8.6-7.5 10.1-4.3-1.5-7.5-5.3-7.5-10.1V6L12 3z"/><path d="M8.7 12.2l2.2 2.2 4.4-4.4"/></svg>
+        </span>
+        <h3 data-i18n="feat.auto.t">Ключ сразу</h3>
+        <p data-i18n="feat.auto.d">После оплаты сайт сам создаёт доступ на всех пяти серверах.</p>
+      </article>
+
+      <article class="feat reveal" style="--d:120ms">
+        <span class="feat__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>
+        </span>
+        <h3 data-i18n="feat.renew.t">Файл с ключом</h3>
+        <p data-i18n="feat.renew.d">Ключ скачивается как .txt: ссылка-подписка и инструкция внутри.</p>
+      </article>
+
+      <article class="feat reveal" style="--d:180ms">
+        <span class="feat__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16v11H9l-5 4V5.5z"/><path d="M8 9.5h8M8 12.5h5"/></svg>
+        </span>
+        <h3 data-i18n="feat.help.t">Поддержка</h3>
+        <p data-i18n="feat.help.d">Вопросы по подключению — в @xsisetvpnbot.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HOW ================= -->
+<section class="sec" id="how">
+  <div class="wrap">
+    <header class="sec__head reveal">
+      <h2 data-i18n="how.title">Три шага</h2>
+      <p class="lead" data-i18n="how.text">От выбора тарифа до рабочего ключа — пара минут.</p>
+    </header>
+
+    <ol class="steps">
+      <li class="step reveal">
+        <span class="step__n" aria-hidden="true">01</span>
+        <h3 data-i18n="how.s1.t">Выберите тариф</h3>
+        <p data-i18n="how.s1.d">1, 3, 6 или 12 месяцев. Все пять серверов включены.</p>
+      </li>
+      <li class="step reveal" style="--d:80ms">
+        <span class="step__n" aria-hidden="true">02</span>
+        <h3 data-i18n="how.s2.t">Оплатите на сайте</h3>
+        <p data-i18n="how.s2.d">CryptoBot или Platega: карта, СБП, USDT, TRX, TON.</p>
+      </li>
+      <li class="step reveal" style="--d:160ms">
+        <span class="step__n" aria-hidden="true">03</span>
+        <h3 data-i18n="how.s3.t">Скачайте ключ</h3>
+        <p data-i18n="how.s3.d">Файл .txt со ссылкой-подпиской и инструкцией по подключению.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= PRICING ================= -->
+<section class="sec" id="pricing">
+  <div class="wrap">
+    <header class="sec__head reveal">
+      <h2 data-i18n="price.title">Тарифы</h2>
+      <p class="lead" data-i18n="price.text">Один тариф — все пять серверов. Оплата в рублях, ключ файлом .txt.</p>
+    </header>
+
+    <div class="plan-grid">
+      <article class="plan reveal">
+        <div class="plan__head">
+          <h3 data-i18n="plan.m1">1 месяц</h3>
+          <span class="plan__per" data-i18n="plan.m1.per">100 ₽ в месяц</span>
+        </div>
+        <p class="plan__price"><span class="plan__num">100</span> <span class="plan__cur">₽</span></p>
+        <p class="plan__note" data-i18n="plan.m1.note">Оплата раз в месяц</p>
+        <ul class="plan__list">
+          <li data-i18n="plan.all">Все 5 серверов</li>
+          <li data-i18n="plan.wl">Обход белых списков</li>
+          <li data-i18n="plan.key">Ключ файлом .txt</li>
+        </ul>
+        <a class="btn plan__btn" href="#checkout" data-plan="m1" data-i18n="plan.cta">Оплатить</a>
+      </article>
+
+      <article class="plan reveal" style="--d:60ms">
+        <div class="plan__head">
+          <h3 data-i18n="plan.m3">3 месяца</h3>
+          <span class="plan__per" data-i18n="plan.m3.per">90 ₽ в месяц</span>
+        </div>
+        <p class="plan__price"><span class="plan__num">270</span> <span class="plan__cur">₽</span></p>
+        <p class="plan__note" data-i18n="plan.m3.note">Экономия 30 ₽</p>
+        <ul class="plan__list">
+          <li data-i18n="plan.all">Все 5 серверов</li>
+          <li data-i18n="plan.wl">Обход белых списков</li>
+          <li data-i18n="plan.key">Ключ файлом .txt</li>
+        </ul>
+        <a class="btn plan__btn" href="#checkout" data-plan="m3" data-i18n="plan.cta">Оплатить</a>
+      </article>
+
+      <article class="plan reveal" style="--d:120ms">
+        <div class="plan__head">
+          <h3 data-i18n="plan.m6">6 месяцев</h3>
+          <span class="plan__per" data-i18n="plan.m6.per">83 ₽ в месяц</span>
+        </div>
+        <p class="plan__price"><span class="plan__num">500</span> <span class="plan__cur">₽</span></p>
+        <p class="plan__note" data-i18n="plan.m6.note">Экономия 100 ₽</p>
+        <ul class="plan__list">
+          <li data-i18n="plan.all">Все 5 серверов</li>
+          <li data-i18n="plan.wl">Обход белых списков</li>
+          <li data-i18n="plan.key">Ключ файлом .txt</li>
+        </ul>
+        <a class="btn plan__btn" href="#checkout" data-plan="m6" data-i18n="plan.cta">Оплатить</a>
+      </article>
+
+      <article class="plan plan--best reveal" style="--d:180ms">
+        <div class="plan__head">
+          <h3 data-i18n="plan.m12">12 месяцев</h3>
+          <span class="plan__badge" data-i18n="plan.best">выгодно</span>
+        </div>
+        <p class="plan__price"><span class="plan__num">900</span> <span class="plan__cur">₽</span></p>
+        <p class="plan__note" data-i18n="plan.m12.note">75 ₽ в месяц · экономия 300 ₽</p>
+        <ul class="plan__list">
+          <li data-i18n="plan.all">Все 5 серверов</li>
+          <li data-i18n="plan.wl">Обход белых списков</li>
+          <li data-i18n="plan.key">Ключ файлом .txt</li>
+        </ul>
+        <a class="btn plan__btn" href="#checkout" data-plan="m12" data-i18n="plan.cta">Оплатить</a>
+      </article>
+    </div>
+
+    <!-- заказ: форма → оплата → ключ -->
+    <p class="trial-note reveal">
+      <span data-i18n="price.trial">Пробный период выдаётся только в Telegram-боте</span>
+      <a href="https://t.me/xsisetvpnbot" target="_blank" rel="noopener">@xsisetvpnbot</a>
+    </p>
+
+    <section class="checkout" id="checkout" hidden aria-labelledby="checkoutTitle">
+      <div class="checkout__head">
+        <div>
+          <span class="checkout__label" data-i18n="co.label">Заказ</span>
+          <h3 id="checkoutTitle" data-i18n="co.formTitle">Оформление</h3>
+        </div>
+        <button type="button" class="link-btn" id="cancelBtn" data-i18n="co.cancel">Выбрать другой тариф</button>
+      </div>
+
+      <p class="checkout__plan"><span id="orderPlan">—</span><span class="dot" aria-hidden="true">·</span><span id="orderAmount">—</span></p>
+
+      <div class="co-block">
+        <span class="co-block__label" data-i18n="co.who">Кто покупает</span>
+        <div class="seg" role="tablist" aria-label="Способ входа" data-i18n-aria="co.who">
+          <button type="button" class="seg__btn is-active" role="tab" aria-selected="true" data-mode="anon" data-i18n="co.mode.anon">Без аккаунта</button>
+          <button type="button" class="seg__btn" role="tab" aria-selected="false" data-mode="email" data-i18n="co.mode.email">Почта</button>
+          <button type="button" class="seg__btn" role="tab" aria-selected="false" data-mode="telegram" data-i18n="co.mode.tg">Telegram</button>
+        </div>
+
+        <div class="co-pane" data-pane="anon">
+          <p class="co-note" data-i18n="co.anonNote">Аккаунт не нужен. После оплаты ключ сразу скачается файлом — сохраните его.</p>
+        </div>
+
+        <div class="co-pane" data-pane="email" hidden>
+          <div id="authGuest">
+            <div class="fields">
+              <label class="field">
+                <span data-i18n="co.email">Почта</span>
+                <input id="authEmail" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" />
+              </label>
+              <label class="field">
+                <span data-i18n="co.password">Пароль</span>
+                <input id="authPassword" type="password" autocomplete="current-password" minlength="8" placeholder="••••••••" />
+              </label>
+            </div>
+            <div class="co-row">
+              <button type="button" class="btn btn--ghost btn--sm" id="loginBtn" data-i18n="co.login">Войти</button>
+              <button type="button" class="btn btn--ghost btn--sm" id="registerBtn" data-i18n="co.register">Создать аккаунт</button>
+            </div>
+            <p class="co-status" id="authStatus" role="status" aria-live="polite"></p>
+          </div>
+          <div id="authUser" hidden>
+            <p class="co-note"><span data-i18n="co.signedAs">Вы вошли как</span> <b id="authWho"></b></p>
+            <button type="button" class="link-btn" id="logoutBtn" data-i18n="co.logout">Выйти</button>
+          </div>
+        </div>
+
+        <div class="co-pane" data-pane="telegram" hidden>
+          <div id="tgWidget" class="tg-widget"></div>
+          <p class="co-note" id="tgNote" data-i18n="co.tgNote">Вход через Telegram привязывает ключи к аккаунту. Виджет работает только на домене с HTTPS.</p>
+          <label class="consent consent--tg">
+            <input type="checkbox" id="tgConsent" />
+            <span>
+              <span data-i18n="co.consent1">Мне 18 лет и больше.</span>
+              <span data-i18n="co.consent2">Я согласен с</span>
+              <a href="privacy.html" target="_blank" rel="noopener" data-i18n="co.consentLink">политикой обработки персональных данных</a>
+              <span data-i18n="co.consent3">и принимаю условия сервиса.</span>
+            </span>
+          </label>
+          <p class="co-status" id="tgStatus" role="status" aria-live="polite"></p>
+        </div>
+      </div>
+
+      <div class="co-block">
+        <span class="co-block__label" data-i18n="co.method">Способ оплаты</span>
+        <div class="pay-grid">
+          <label class="pay">
+            <input type="radio" name="payMethod" value="cryptobot" checked />
+            <span class="pay__body">
+              <span class="pay__title">CryptoBot</span>
+              <span class="pay__sub" data-i18n="co.cryptoSub">USDT, TRX, TON</span>
+            </span>
+          </label>
+          <label class="pay">
+            <input type="radio" name="payMethod" value="platega" />
+            <span class="pay__body">
+              <span class="pay__title">Platega</span>
+              <span class="pay__sub" data-i18n="co.plategaSub">Карта, СБП</span>
+            </span>
+          </label>
+        </div>
+
+        <label class="field field--asset" id="assetField">
+          <span data-i18n="co.asset">Монета</span>
+          <select id="payAsset">
+            <option value="USDT">USDT</option>
+            <option value="TRX">TRX</option>
+            <option value="TON">TON</option>
+          </select>
+        </label>
+      </div>
+
+      <label class="consent">
+        <input type="checkbox" id="consentBox" />
+        <span>
+          <span data-i18n="co.consent1">Мне 18 лет и больше.</span>
+          <span data-i18n="co.consent2">Я согласен с</span>
+          <a href="privacy.html" target="_blank" rel="noopener" data-i18n="co.consentLink">политикой обработки персональных данных</a>
+          <span data-i18n="co.consent3">и принимаю условия сервиса.</span>
+        </span>
+      </label>
+
+      <div class="checkout__actions">
+        <button type="button" class="btn btn--primary" id="startPayBtn">
+          <span data-i18n="co.payNow">Оплатить</span> <span id="startPaySum">—</span>
+        </button>
+      </div>
+
+      <p class="checkout__status" id="checkoutStatus" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="checkout checkout--pay" id="paymentPanel" hidden aria-labelledby="paymentTitle">
+      <div class="checkout__head">
+        <div>
+          <span class="checkout__label" data-i18n="co.payLabel">Оплата</span>
+          <h3 id="paymentTitle" data-i18n="co.awaiting">Ожидает оплаты</h3>
+        </div>
+        <span class="pill pill--pending" id="orderStatus" data-i18n="co.pending">Ожидает оплаты</span>
+      </div>
+
+      <dl class="checkout__facts">
+        <div><dt data-i18n="co.number">Номер</dt><dd id="payOrderId">—</dd></div>
+        <div><dt data-i18n="co.plan">Тариф</dt><dd id="payPlan">—</dd></div>
+        <div><dt data-i18n="co.sum">Сумма</dt><dd id="payAmount">—</dd></div>
+      </dl>
+
+      <p class="checkout__hint" id="payHint" data-i18n="co.payHint">Откройте оплату и завершите платёж. Статус обновится сам.</p>
+
+      <div class="checkout__actions">
+        <a class="btn btn--primary" id="openPayBtn" href="#" target="_blank" rel="noopener" data-i18n="co.openPay">Перейти к оплате</a>
+        <button type="button" class="btn btn--ghost" id="checkBtn" data-i18n="co.check">Проверить оплату</button>
+        <button type="button" class="btn btn--ghost" id="demoBtn" hidden data-i18n="co.demo">Демо-оплата</button>
+        <button type="button" class="link-btn" id="cancelPayBtn" data-i18n="co.cancelPay">Отменить</button>
+      </div>
+
+      <p class="checkout__status" id="payStatus" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="checkout checkout--done" id="donePanel" hidden aria-labelledby="doneTitle">
+      <div class="checkout__head">
+        <div>
+          <span class="checkout__label" data-i18n="co.doneLabel">Ключ</span>
+          <h3 id="doneTitle" data-i18n="co.doneTitle">Ключ готов</h3>
+        </div>
+        <span class="pill pill--paid" data-i18n="co.paid">Оплачено</span>
+      </div>
+
+      <dl class="checkout__facts">
+        <div><dt data-i18n="co.number">Номер</dt><dd id="doneId">—</dd></div>
+        <div><dt data-i18n="co.plan">Тариф</dt><dd id="donePlan">—</dd></div>
+        <div><dt data-i18n="co.validUntil">Действует до</dt><dd id="doneValid">—</dd></div>
+      </dl>
+
+      <p class="checkout__hint" data-i18n="co.doneHint">Ключ — это ссылка-подписка. Скачайте файл: внутри ссылка и инструкция по подключению.</p>
+
+      <code class="key-line" id="doneKey"></code>
+
+      <div class="checkout__actions">
+        <a class="btn btn--primary" id="downloadBtn" href="#" download data-i18n="co.download">Скачать ключ (.txt)</a>
+        <button type="button" class="btn btn--ghost" id="copyKeyBtn" data-i18n="co.copy">Скопировать ключ</button>
+        <button type="button" class="link-btn" id="newOrderBtn" data-i18n="co.newOrder">Новый заказ</button>
+      </div>
+
+      <p class="checkout__status" id="doneStatus" role="status" aria-live="polite"></p>
+    </section>
+
+    <noscript>
+      <p class="noscript">Для оплаты на сайте нужен JavaScript. Без него кнопки тарифов открывают Telegram-бота.</p>
+    </noscript>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section class="sec" id="faq">
+  <div class="wrap">
+    <header class="sec__head reveal">
+      <h2 data-i18n="faq.title">Вопросы</h2>
+      <p class="lead" data-i18n="faq.text">Коротко о том, как всё устроено.</p>
+    </header>
+
+    <div class="faq">
+      <details class="faq__item reveal">
+        <summary><span data-i18n="faq.q1">Как проходит оплата?</span><span class="faq__plus" aria-hidden="true"></span></summary>
+        <p data-i18n="faq.a1">Выбираете тариф и способ оплаты. Сайт создаёт счёт в CryptoBot или Platega, сам проверяет оплату и сразу выдаёт ключ. Никуда переходить за ключом не нужно.</p>
+      </details>
+
+      <details class="faq__item reveal" style="--d:60ms">
+        <summary><span data-i18n="faq.q2">Какие способы оплаты есть?</span><span class="faq__plus" aria-hidden="true"></span></summary>
+        <p data-i18n="faq.a2">CryptoBot принимает USDT, TRX и TON. Platega — банковскую карту и СБП. Все платежи в рублях, комиссию провайдер показывает до подтверждения.</p>
+      </details>
+
+      <details class="faq__item reveal" style="--d:120ms">
+        <summary><span data-i18n="faq.q3">Можно купить без аккаунта?</span><span class="faq__plus" aria-hidden="true"></span></summary>
+        <p data-i18n="faq.a3">Да. Режим «Без аккаунта» выдаёт ключ сразу после оплаты — сохраните скачанный файл. Если хотите хранить ключи на сайте, войдите по почте или через Telegram.</p>
+      </details>
+
+      <details class="faq__item reveal" style="--d:180ms">
+        <summary><span data-i18n="faq.q4">Есть пробный период?</span><span class="faq__plus" aria-hidden="true"></span></summary>
+        <p data-i18n="faq.a4">Пробный доступ выдаётся только в Telegram-боте @xsisetvpnbot. На сайте пробного периода нет — здесь можно сразу купить полный тариф.</p>
+      </details>
+
+      <details class="faq__item reveal" style="--d:240ms">
+        <summary><span data-i18n="faq.q5">Что такое обход белых списков?</span><span class="faq__plus" aria-hidden="true"></span></summary>
+        <p data-i18n="faq.a5">Это отдельный сервер для случаев, когда обычные VPN-подключения не проходят из-за ограничений по белым спискам. Он входит в любой тариф.</p>
+      </details>
+
+      <details class="faq__item reveal" style="--d:300ms">
+        <summary><span data-i18n="faq.q6">Что внутри файла с ключом?</span><span class="faq__plus" aria-hidden="true"></span></summary>
+        <p data-i18n="faq.a6">Ссылка-подписка и короткая инструкция. Скопируйте ссылку в Happ, Streisand, v2rayNG или FoXray, обновите подписку и включите VPN.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ACCOUNT ================= -->
+<section class="sec" id="account">
+  <div class="wrap">
+    <header class="sec__head reveal">
+      <h2 data-i18n="acc.title">Мои ключи</h2>
+      <p class="lead" data-i18n="acc.text">Войдите по почте или через Telegram — купленные ключи будут под рукой. Аккаунт не обязателен.</p>
+    </header>
+
+    <div class="account reveal" id="accountBox">
+      <div id="accGuest">
+        <div class="account__head">
+          <div>
+            <span class="account__name" data-i18n="acc.guestTitle">Покупка без аккаунта</span>
+            <p class="account__meta" data-i18n="acc.guestText">Ключ выдаётся сразу после оплаты и скачивается файлом. Вход нужен только чтобы хранить ключи на сайте.</p>
+          </div>
+          <a class="btn btn--ghost btn--sm" href="#pricing" data-i18n="acc.pick">Выбрать тариф</a>
+        </div>
+      </div>
+
+      <div id="accUser" hidden>
+        <div class="account__head">
+          <div class="account__ident">
+            <span class="account__name" id="accName">—</span>
+            <span class="account__meta" id="accMeta"></span>
+          </div>
+          <button type="button" class="link-btn" id="accLogout" data-i18n="acc.logout">Выйти</button>
+        </div>
+
+        <div class="keys" id="accList"></div>
+        <p class="account__meta" id="accEmpty" hidden data-i18n="acc.empty">Оплаченных заказов пока нет.</p>
+        <p class="checkout__status" id="accStatus" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section class="sec" id="contact">
+  <div class="wrap cta">
+    <h2 class="reveal" data-i18n="cta.title">Подключиться</h2>
+    <p class="cta__text reveal" data-i18n="cta.text">
+      Выберите тариф и оплатите на сайте. Если что-то пошло не так, напишите нам.
+    </p>
+    <div class="cta__actions reveal">
+      <a class="btn btn--primary btn--lg" href="https://t.me/xsisetvpnbot" target="_blank" rel="noopener" data-i18n="cta.bot">Открыть @xsisetvpnbot</a>
+      <a class="cta__mail" href="mailto:xsiset@proton.me">xsiset@proton.me</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="ftr">
+  <div class="wrap ftr__in">
+    <a class="ftr__brand" href="#top">
+      <span data-i18n="brand">xsiset</span><span class="brand__tag">vpn</span>
+    </a>
+    <span class="ftr__copy">© 2026 xsiset vpn</span>
+    <a class="ftr__link" href="https://t.me/xsisetvpnbot" target="_blank" rel="noopener">Telegram</a>
+    <a class="ftr__link" href="mailto:xsiset@proton.me" data-i18n="ftr.mail">Почта</a>
+    <a class="ftr__link" href="privacy.html" data-i18n="ftr.privacy">Политика ПД</a>
+    <button type="button" class="ftr__up" id="toTop" aria-label="Наверх" data-i18n-aria="aria.top">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg>
+    </button>
+  </div>
+</footer>
+
+<script src="script.js?v=20261101c"></script>
+</body>
+</html>
