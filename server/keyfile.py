@@ -1,8 +1,8 @@
-"""Текстовый файл с ключом: то, что пользователь скачивает с сайта."""
+"""Формирование содержимого .txt файла с ключом доступа."""
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any
 
 import config
@@ -21,30 +21,28 @@ def build_key_text(order: dict[str, Any], lang: str = "ru") -> str:
     sub_url = order.get("key_sub_url") or ""
     order_id = order["id"]
     support = f"@{config.BOT_USERNAME}"
+    now_utc = datetime.now(timezone.utc).strftime("%d.%m.%Y %H:%M")
 
     if lang == "en":
         lines = [
             "xsiset vpn — access key",
             "=" * 46,
             "",
-            f"Order:        {order_id}",
+            f"Order ID:     {order_id}",
             f"Plan:         {months} month(s)",
             f"Valid until:  {_fmt(valid_until)}",
             "",
-            "Your key is the subscription link below.",
-            "Copy the whole line — that is the key:",
+            "Your subscription link (copy the entire line):",
             "",
             sub_url,
             "",
-            "How to connect",
-            "1. Install Happ (or Streisand, v2rayNG, FoXray).",
-            "2. Choose “Add subscription” and paste this link.",
-            "3. Update the subscription, pick a server, turn the VPN on.",
+            "How to connect:",
+            "1. Install Happ, Streisand, v2rayNG or FoXray.",
+            "2. Tap 'Add subscription' and paste this link.",
+            "3. Update subscription, select a location and connect.",
             "",
             f"Support: {support}",
-            f"Trial access is available only in the Telegram bot: {support}",
-            "",
-            f"Generated: {datetime.utcnow().strftime('%d.%m.%Y %H:%M')} UTC",
+            f"Generated: {now_utc} UTC",
             "",
         ]
         return "\n".join(lines)
@@ -57,20 +55,17 @@ def build_key_text(order: dict[str, Any], lang: str = "ru") -> str:
         f"Тариф:        {months} мес.",
         f"Действует до: {_fmt(valid_until)}",
         "",
-        "Ключ — это ссылка-подписка ниже.",
-        "Скопируйте строку целиком, это и есть ключ:",
+        "Ссылка-подписка (скопируйте строку целиком):",
         "",
         sub_url,
         "",
-        "Как подключиться",
-        "1. Установите Happ (или Streisand, v2rayNG, FoXray).",
-        "2. Выберите «Добавить подписку» и вставьте эту ссылку.",
-        "3. Обновите подписку, выберите сервер и включите VPN.",
+        "Инструкция по подключению:",
+        "1. Установите приложение Happ (iOS / Android), Streisand, v2rayNG или FoXray.",
+        "2. Выберите «Добавить подписку» и вставьте ссылку выше.",
+        "3. Обновите список серверов и нажмите кнопку подключения.",
         "",
         f"Поддержка: {support}",
-        f"Пробный период — только в Telegram-боте: {support}",
-        "",
-        f"Файл создан: {datetime.utcnow().strftime('%d.%m.%Y %H:%M')} UTC",
+        f"Файл сформирован: {now_utc} UTC",
         "",
     ]
     return "\n".join(lines)
