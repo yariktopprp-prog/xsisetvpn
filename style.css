@@ -358,6 +358,19 @@ summary::-webkit-details-marker {
   flex: none;
 }
 
+.hdr__support {
+  gap: 0;
+  padding: 6px 11px;
+  border: 1px solid var(--nav-line);
+  border-radius: 980px;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.hdr__support::after {
+  content: none;
+}
+
 .lang {
   display: inline-flex;
   align-items: center;
@@ -1319,10 +1332,6 @@ html[data-theme="light"] .trial-card {
   color: var(--muted);
 }
 
-.pay--admin .pay__title {
-  color: var(--orange);
-}
-
 .field {
   display: grid;
   gap: 6px;
@@ -1538,14 +1547,22 @@ html[data-theme="light"] .checkout--done {
 .cta__actions {
   margin-top: 34px;
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.cta__buttons {
+  display: flex;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 14px 28px;
+  gap: 14px;
 }
 
 .cta__mail {
   font-size: 16px;
+  line-height: 1;
   color: var(--blue-text);
   transition: color .2s ease;
 }
@@ -1891,6 +1908,15 @@ html.js-safe .reveal {
   .hero__actions .btn,
   .checkout__actions .btn,
   .checkout__actions .link-btn {
+    width: 100%;
+  }
+
+  .cta__buttons {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .cta__buttons .btn {
     width: 100%;
   }
 }

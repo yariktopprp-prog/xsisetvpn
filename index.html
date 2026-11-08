@@ -9,23 +9,11 @@
     content="xsiset vpn: пять серверов в Европе, обход белых списков, мгновенная оплата без регистрации, ключ файлом .txt." />
   <meta name="theme-color" content="#000000" />
 
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="xsiset vpn" />
-  <meta property="og:title" content="xsiset vpn · VPN без границ" />
-  <meta property="og:description"
-    content="Пять серверов в Европе, обход белых списков, оплата картой и криптой, ключ файлом." />
-  <meta property="og:locale" content="ru_RU" />
-  <meta name="twitter:card" content="summary_large_image" />
-
   <link rel="icon"
     href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23000000'/%3E%3Cpath d='M32 13l15 6v11c0 10-6.3 17.8-15 21-8.7-3.2-15-11-15-21V19l15-6z' fill='none' stroke='%23f5f5f7' stroke-width='4' stroke-linejoin='round'/%3E%3Cpath d='M25 32l5 5 10-10' fill='none' stroke='%232997ff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
-
-  <script>try { if (localStorage.getItem('xsisetvpn-theme') === 'light') document.documentElement.setAttribute('data-theme', 'light') } catch (e) { } document.documentElement.className += ' js'; setTimeout(function () { if (!document.documentElement.classList.contains('js-ready')) { document.documentElement.classList.add('js-safe') } }, 2500);</script>
-  <link rel="stylesheet" href="style.css?v=20261104prod" />
+  <script src="theme-init.js?v=20261106d"></script>
+  <link rel="stylesheet" href="style.css?v=20261106d" />
 </head>
 
 <body>
@@ -64,6 +52,8 @@
             <path d="M20 14.2A8.2 8.2 0 0 1 9.8 4a8.2 8.2 0 1 0 10.2 10.2Z" />
           </svg>
         </button>
+        <a class="link-cta hdr__support" href="https://t.me/hkpde" target="_blank" rel="noopener"
+          data-i18n="nav.support">Поддержка</a>
         <a class="hdr__cta" href="#pricing" data-i18n="nav.cta">Подключиться</a>
         <button type="button" class="burger" id="burger" aria-label="Меню" data-i18n-aria="aria.menu"
           aria-expanded="false" aria-controls="nav">
@@ -338,7 +328,6 @@
           </article>
         </div>
 
-        <!-- Заметный баннер пробного периода -->
         <div class="trial-card reveal">
           <div class="trial-card__body">
             <span class="trial-card__badge">Бесплатно</span>
@@ -399,12 +388,15 @@
             </label>
           </div>
 
+          <!-- Явный выбор: чекбокс НЕ отмечен по умолчанию -->
           <label class="consent">
-            <input type="checkbox" id="consentBox" checked />
+            <input type="checkbox" id="consentBox" />
             <span>
               <span data-i18n="co.consentText">Я согласен с</span>
-              <a href="privacy.html" target="_blank" rel="noopener" data-i18n="co.consentLink">условиями сервиса и
-                политикой конфиденциальности</a>.
+              <a href="/terms" target="_blank" rel="noopener" data-i18n="co.termsLink">условиями сервиса</a>
+              <span data-i18n="co.and">и</span>
+              <a href="/privacy" target="_blank" rel="noopener" data-i18n="co.privacyLink">политикой
+                конфиденциальности</a>.
             </span>
           </label>
 
@@ -498,6 +490,8 @@
             <a class="btn btn--ghost" id="downloadBtn" href="#" download target="_blank" rel="noopener"
               data-i18n="co.download">Файл с ключом (.txt)</a>
             <button type="button" class="btn btn--ghost" id="copyKeyBtn" data-i18n="co.copy">Скопировать ссылку</button>
+            <a class="btn btn--ghost" href="https://t.me/hkpde" target="_blank" rel="noopener"
+              data-i18n="co.support">Поддержка</a>
             <button type="button" class="link-btn" id="newOrderBtn" data-i18n="co.newOrder">Купить ещё один
               ключ</button>
           </div>
@@ -567,8 +561,12 @@
           Выберите тариф и оплатите на сайте. Если возникнут вопросы, напишите в поддержку.
         </p>
         <div class="cta__actions reveal">
-          <a class="btn btn--primary btn--lg" href="https://t.me/xsisetvpnbot" target="_blank" rel="noopener"
-            data-i18n="cta.bot">Открыть @xsisetvpnbot</a>
+          <div class="cta__buttons">
+            <a class="btn btn--primary btn--lg" href="https://t.me/xsisetvpnbot" target="_blank" rel="noopener"
+              data-i18n="cta.bot">Открыть @xsisetvpnbot</a>
+            <a class="btn btn--ghost btn--lg" href="https://t.me/hkpde" target="_blank" rel="noopener"
+              data-i18n="cta.support">Поддержка @hkpde</a>
+          </div>
           <a class="cta__mail" href="mailto:xsiset@proton.me">xsiset@proton.me</a>
         </div>
       </div>
@@ -584,8 +582,11 @@
       </a>
       <span class="ftr__copy">© 2026 xsiset vpn</span>
       <a class="ftr__link" href="https://t.me/xsisetvpnbot" target="_blank" rel="noopener">Telegram</a>
+      <a class="ftr__link" href="https://t.me/hkpde" target="_blank" rel="noopener"
+        data-i18n="ftr.support">Поддержка</a>
       <a class="ftr__link" href="mailto:xsiset@proton.me" data-i18n="ftr.mail">Почта</a>
-      <a class="ftr__link" href="privacy.html" data-i18n="ftr.privacy">Политика</a>
+      <a class="ftr__link" href="/terms" data-i18n="ftr.terms">Условия</a>
+      <a class="ftr__link" href="/privacy" data-i18n="ftr.privacy">Политика</a>
       <button type="button" class="ftr__up" id="toTop" aria-label="Наверх" data-i18n-aria="aria.top">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
           stroke-linejoin="round" aria-hidden="true">
@@ -611,7 +612,7 @@
         </div>
         <p class="privacy-pill__desc" data-i18n="pill.desc">
           Мы не храним логи активности, не требуем почту или аккаунт и не используем трекеры.
-          <a href="privacy.html" target="_blank" rel="noopener" data-i18n="pill.more">Подробнее</a>
+          <a href="/privacy" target="_blank" rel="noopener" data-i18n="pill.more">Подробнее</a>
         </p>
       </div>
       <button type="button" class="btn btn--primary btn--sm privacy-pill__btn" id="privacyNoticeBtn"
@@ -619,7 +620,7 @@
     </div>
   </aside>
 
-  <script src="script.js?v=20261104prod"></script>
+  <script src="script.js?v=20261106d"></script>
 </body>
 
 </html>

@@ -1,10 +1,9 @@
-"""SQLite: ультра-минималистичный Zero-Knowledge буфер заказов.
-Только 12 полей, шифрование ссылок клиентским токеном, затирание платежей, автоочистка 24ч.
+"""SQLite: Zero-Knowledge временный буфер заказов.
+Динамическая миграция без потери данных, безопасный TTL только для выданных ключей.
 """
 
 from __future__ import annotations
 
-import base64
 import hashlib
 import hmac
 import secrets
@@ -13,12 +12,13 @@ from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 from typing import Any, Iterator
 
-from config import CURRENCY, DB_PATH, ORDER_TTL_HOURS, PLANS_BY_ID
+import secure
+from config import CONSENT_VERSION, CURRENCY, DB_PATH, ORDER_TTL_HOURS, PLANS_BY_ID
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS orders (
     id              TEXT PRIMARY KEY,
-    access_token    TEXT NOT NULL,
+    token_hash      TEXT NOT NULL,
     plan_id         TEXT NOT NULL,
     amount          INTEGER NOT NULL,
     currency        TEXT NOT NULL,
@@ -28,10 +28,14 @@ CREATE TABLE IF NOT EXISTS orders (
     pay_url         TEXT,
     key_sub_url     TEXT,
     key_valid_until TEXT,
+    key_issued_at   TEXT,
+    consent_at      TEXT NOT NULL,
+    consent_version TEXT NOT NULL,
     created_at      TEXT NOT NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
+CREATE INDEX IF NOT EXISTS idx_orders_provider ON orders(provider_id);
 """
 
 
@@ -55,55 +59,10 @@ def parse_dt(value: str | None) -> datetime | None:
     return parsed
 
 
-# ----------------- КРИПТОГРАФИЯ ZERO-KNOWLEDGE -----------------
-
-
 def hash_token(raw_token: str) -> str:
     if not raw_token:
         return ""
     return "th_" + hashlib.sha256(raw_token.encode("utf-8")).hexdigest()
-
-
-def _keystream(key_bytes: bytes, nonce: bytes, length: int) -> bytes:
-    out = bytearray()
-    counter = 0
-    while len(out) < length:
-        block = hmac.new(key_bytes, nonce + counter.to_bytes(4, "big"), hashlib.sha256).digest()
-        out.extend(block)
-        counter += 1
-    return bytes(out[:length])
-
-
-def encrypt_with_token(plaintext: str, raw_token: str) -> str:
-    if not plaintext or not raw_token:
-        return plaintext
-    nonce = secrets.token_bytes(16)
-    key_bytes = hashlib.sha256(raw_token.encode("utf-8")).digest()
-    data = plaintext.encode("utf-8")
-    stream = _keystream(key_bytes, nonce, len(data))
-    cipher = bytes(a ^ b for a, b in zip(data, stream))
-    return "enc_" + base64.urlsafe_b64encode(nonce + cipher).decode("ascii")
-
-
-def decrypt_with_token(ciphertext: str | None, raw_token: str) -> str | None:
-    if not ciphertext:
-        return None
-    if not ciphertext.startswith("enc_"):
-        return ciphertext
-    if not raw_token:
-        return None
-    try:
-        raw = base64.urlsafe_b64decode(ciphertext[4:].encode("ascii"))
-        nonce, cipher = raw[:16], raw[16:]
-        key_bytes = hashlib.sha256(raw_token.encode("utf-8")).digest()
-        stream = _keystream(key_bytes, nonce, len(cipher))
-        plain = bytes(a ^ b for a, b in zip(cipher, stream))
-        return plain.decode("utf-8")
-    except Exception:
-        return None
-
-
-# ----------------- РАБОТА С БАЗОЙ -----------------
 
 
 def connect() -> sqlite3.Connection:
@@ -128,16 +87,97 @@ def session() -> Iterator[sqlite3.Connection]:
         conn.close()
 
 
-def init_db() -> None:
-    with session() as conn:
-        cursor = conn.execute("PRAGMA table_info(orders)")
-        cols = [row["name"] for row in cursor.fetchall()]
-        if cols and len(cols) > 12:
-            conn.execute("DROP TABLE orders")
+def _compact() -> None:
+    """Перезаписывает файл БД, чтобы в WAL/свободных страницах не осталось открытых данных."""
+    raw = connect()
+    try:
+        raw.isolation_level = None
+        raw.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+        raw.execute("VACUUM")
+    finally:
+        raw.close()
 
-        conn.executescript(SCHEMA)
+
+def init_db() -> None:
+    """Безопасная миграция с динамическим сопоставлением имеющихся колонок."""
+    changed = False
+    with session() as conn:
+        cur = conn.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='orders'")
+        if cur.fetchone():
+            existing_cols = {row["name"] for row in conn.execute("PRAGMA table_info(orders)").fetchall()}
+            required_cols = {"token_hash", "key_issued_at"}
+            if not required_cols.issubset(existing_cols):
+                conn.execute("ALTER TABLE orders RENAME TO orders_legacy")
+                conn.executescript(SCHEMA)
+
+                # Безопасно вытягиваем только те поля, которые реально существуют
+                token_expr = "access_token" if "access_token" in existing_cols else ("token_hash" if "token_hash" in existing_cols else "''")
+                issued_expr = "key_issued_at" if "key_issued_at" in existing_cols else ("paid_at" if "paid_at" in existing_cols else "NULL")
+                consent_at_expr = "consent_at" if "consent_at" in existing_cols else "created_at"
+                consent_ver_expr = "consent_version" if "consent_version" in existing_cols else f"'{CONSENT_VERSION}'"
+                sub_expr = "key_sub_url" if "key_sub_url" in existing_cols else "NULL"
+                valid_expr = "key_valid_until" if "key_valid_until" in existing_cols else "NULL"
+                provider_expr = "provider_id" if "provider_id" in existing_cols else "NULL"
+                pay_url_expr = "pay_url" if "pay_url" in existing_cols else "NULL"
+                method_expr = "method" if "method" in existing_cols else "NULL"
+
+                conn.execute(f"""
+                    INSERT INTO orders (
+                        id, token_hash, plan_id, amount, currency, status,
+                        method, provider_id, pay_url, key_sub_url, key_valid_until, key_issued_at,
+                        consent_at, consent_version, created_at
+                    )
+                    SELECT
+                        id,
+                        {token_expr},
+                        plan_id,
+                        amount,
+                        currency,
+                        status,
+                        {method_expr},
+                        {provider_expr},
+                        {pay_url_expr},
+                        {sub_expr},
+                        {valid_expr},
+                        {issued_expr},
+                        {consent_at_expr},
+                        {consent_ver_expr},
+                        created_at
+                    FROM orders_legacy
+                """)
+                conn.execute("DROP TABLE orders_legacy")
+        else:
+            conn.executescript(SCHEMA)
+
+        # Шифруем всё, что успело сохраниться в открытом виде, и хэшируем старые токены.
+        for row in conn.execute(
+            "SELECT id, token_hash, key_sub_url, provider_id, pay_url, key_issued_at, created_at FROM orders"
+        ).fetchall():
+            updates: dict[str, Any] = {}
+            token = row["token_hash"] or ""
+            if token == "migrated":
+                updates["token_hash"] = ""
+            elif token and not token.startswith("th_"):
+                updates["token_hash"] = hash_token(token)
+            for field in ("key_sub_url", "provider_id", "pay_url"):
+                value = row[field]
+                if value and not secure.is_encrypted(value):
+                    updates[field] = secure.protect(value, aad=row["id"])
+            if row["key_sub_url"] and not row["key_issued_at"]:
+                updates["key_issued_at"] = row["created_at"]
+            if updates:
+                assignments = ", ".join(f"{name} = ?" for name in updates)
+                conn.execute(
+                    f"UPDATE orders SET {assignments} WHERE id = ?",
+                    (*updates.values(), row["id"]),
+                )
+                changed = True
+
         conn.execute("DROP TABLE IF EXISTS events")
         conn.execute("DROP TABLE IF EXISTS users")
+
+    if changed:
+        _compact()
 
 
 def new_order_id() -> str:
@@ -161,9 +201,9 @@ def create_order(plan_id: str) -> tuple[dict[str, Any] | None, str]:
     with session() as conn:
         conn.execute(
             """INSERT INTO orders
-               (id, access_token, plan_id, amount, currency, status, created_at)
-               VALUES (?, ?, ?, ?, ?, 'pending', ?)""",
-            (order_id, token_hashed, plan_id, plan["price"] * 100, CURRENCY, created),
+               (id, token_hash, plan_id, amount, currency, status, consent_at, consent_version, created_at)
+               VALUES (?, ?, ?, ?, ?, 'pending', ?, ?, ?)""",
+            (order_id, token_hashed, plan_id, plan["price"] * 100, CURRENCY, created, CONSENT_VERSION, created),
         )
         row = conn.execute("SELECT * FROM orders WHERE id = ?", (order_id,)).fetchone()
     return (dict(row) if row else None), raw_token
@@ -179,9 +219,9 @@ def get_order(order_id: str) -> dict[str, Any] | None:
 
 
 def verify_order_token(order: dict[str, Any], raw_token: str) -> bool:
-    if not raw_token or not order.get("access_token"):
+    if not raw_token or not order.get("token_hash"):
         return False
-    stored = order["access_token"]
+    stored = order["token_hash"]
     if stored.startswith("th_"):
         return hmac.compare_digest(stored, hash_token(raw_token))
     return hmac.compare_digest(stored, raw_token)
@@ -206,13 +246,14 @@ def set_payment(order_id: str, *, method: str, provider_id: str, pay_url: str) -
             """UPDATE orders
                SET method = ?, provider_id = ?, pay_url = ?
                WHERE id = ? AND status = 'pending'""",
-            (method, provider_id, pay_url, order_id),
+            (
+                method,
+                secure.protect(provider_id, aad=order_id),
+                secure.protect(pay_url, aad=order_id),
+                order_id,
+            ),
         )
         return bool(cur.rowcount)
-
-
-def mark_checked(order_id: str) -> None:
-    pass
 
 
 def mark_paid(order_id: str, provider_id: str | None = None) -> bool:
@@ -238,23 +279,35 @@ def mark_failed(order_id: str, reason: str = "") -> bool:
     return True
 
 
-def set_key(order_id: str, *, raw_token: str, key_sub_url: str, valid_until: str) -> bool:
-    encrypted_url = encrypt_with_token(key_sub_url, raw_token) if raw_token else key_sub_url
+def set_key(order_id: str, *, key_sub_url: str, valid_until: str, raw_token: str = "") -> bool:
+    issued_at = now_iso()
     with session() as conn:
         cur = conn.execute(
             """UPDATE orders
                SET provider_id = NULL,
                    pay_url = NULL,
                    key_sub_url = ?,
-                   key_valid_until = ?
+                   key_valid_until = ?,
+                   key_issued_at = ?
                WHERE id = ?""",
-            (encrypted_url, valid_until, order_id),
+            (
+                secure.protect(key_sub_url, raw_token, aad=order_id),
+                valid_until,
+                issued_at,
+                order_id,
+            ),
         )
         return bool(cur.rowcount)
 
 
-def set_key_error(order_id: str, message: str) -> None:
-    pass
+def update_key_blob(order_id: str, blob: str) -> bool:
+    """Перешифровывает ссылку на ключ (например, мастер-ключ → ключ клиента)."""
+    with session() as conn:
+        cur = conn.execute(
+            "UPDATE orders SET key_sub_url = ? WHERE id = ?",
+            (blob, order_id),
+        )
+        return bool(cur.rowcount)
 
 
 def pending_with_payment(limit: int = 25) -> list[dict[str, Any]]:
@@ -269,16 +322,28 @@ def pending_with_payment(limit: int = 25) -> list[dict[str, Any]]:
 
 
 def purge_old_orders(hours: int = 24) -> int:
-    cutoff_paid = (now_dt() - timedelta(hours=hours)).isoformat()
-    cutoff_failed = (now_dt() - timedelta(hours=1)).isoformat()
+    """Удаляет завершённые заказы: выданные — через `hours`, неоплаченные — через `hours`,
+    неудачные — через 2 часа. Оплаченные без ключа держим 7 дней для ручного разбора.
+    """
+    now = now_dt()
+    cutoff_issued = (now - timedelta(hours=hours)).isoformat()
+    cutoff_failed = (now - timedelta(hours=2)).isoformat()
+    cutoff_unpaid = (now - timedelta(hours=hours)).isoformat()
+    cutoff_unissued = (now - timedelta(days=7)).isoformat()
+
+    deleted_count = 0
     with session() as conn:
         cur = conn.execute(
             """DELETE FROM orders
-               WHERE created_at < ?
-                  OR (status IN ('failed', 'expired') AND created_at < ?)""",
-            (cutoff_paid, cutoff_failed),
+               WHERE (status = 'paid' AND key_sub_url IS NOT NULL AND key_issued_at IS NOT NULL AND key_issued_at < ?)
+                  OR (status IN ('failed', 'expired') AND created_at < ?)
+                  OR (status = 'pending' AND created_at < ?)
+                  OR (status = 'paid' AND key_sub_url IS NULL AND created_at < ?)""",
+            (cutoff_issued, cutoff_failed, cutoff_unpaid, cutoff_unissued),
         )
-        count = cur.rowcount
-        if count > 0:
-            conn.execute("VACUUM")
-        return count
+        deleted_count = cur.rowcount
+
+    if deleted_count > 0:
+        _compact()
+
+    return deleted_count

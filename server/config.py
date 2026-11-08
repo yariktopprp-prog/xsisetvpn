@@ -74,8 +74,9 @@ SECRET_KEY = _session_secret()
 COOKIE_SECURE = _flag("XSISET_COOKIE_SECURE", False)
 HOST = _env("XSISET_HOST", "127.0.0.1")
 PORT = _int("XSISET_PORT", 8124)
-DEMO = _flag("XSISET_DEMO")
 CONTACT_EMAIL = _env("XSISET_CONTACT_EMAIL", "xsiset@proton.me")
+SUPPORT_USERNAME = _env("XSISET_SUPPORT", "hkpde").lstrip("@")
+TRUST_PROXY = _flag("XSISET_TRUST_PROXY", False)
 
 # --- Telegram ------------------------------------------------------------
 
@@ -95,7 +96,7 @@ PLANS_BY_ID = {plan["id"]: plan for plan in PLANS}
 
 ORDER_TTL_HOURS = _int("XSISET_ORDER_TTL_HOURS", 24)
 PAYMENT_TTL_MINUTES = _int("XSISET_PAYMENT_TTL_MINUTES", 60)
-CONSENT_VERSION = _env("XSISET_CONSENT_VERSION", "2026-11-01")
+CONSENT_VERSION = _env("XSISET_CONSENT_VERSION", "2026-11-05")
 RECONCILE_SECONDS = _int("XSISET_RECONCILE_SECONDS", 120)
 
 # --- платежи -------------------------------------------------------------
@@ -117,15 +118,32 @@ PLATEGA_METHODS = _int("XSISET_PLATEGA_METHOD", 0)
 
 PANEL_URL = _env("XSISET_PANEL_URL").rstrip("/")
 PANEL_TOKEN = _env("XSISET_PANEL_TOKEN")
+PANEL_DOMAIN = _env("XSISET_PANEL_DOMAIN", "xsisetsweden3x-ui1.site")
+PANEL_SUB_PORT = _int("XSISET_PANEL_SUB_PORT", 2096)
 PANEL_INBOUND_IDS = tuple(
     int(item)
     for item in _env("XSISET_PANEL_INBOUNDS", "5,11,13,16,17").split(",")
     if item.strip().isdigit()
 )
+# Ноды обхода белых списков: отдельный клиент с лимитом трафика на месяц.
+PANEL_LIMITED_IDS = tuple(
+    int(item)
+    for item in _env("XSISET_PANEL_LIMITED_IDS", "17").split(",")
+    if item.strip().isdigit()
+)
+LIMIT_GB_PER_MONTH = _int("XSISET_PANEL_LIMIT_GB", 20)
 PANEL_SUB_BASE = _env("XSISET_PANEL_SUB_BASE").rstrip("/")
 PANEL_VERIFY_TLS = _flag("XSISET_PANEL_VERIFY_TLS", True)
 PANEL_TIMEOUT = _int("XSISET_PANEL_TIMEOUT", 20)
 PANEL_MODE = _env("XSISET_PANEL_MODE") or ("live" if PANEL_URL and PANEL_TOKEN else "dry")
+
+# Старая схема выдачи: клиент обхода создаётся с временным subId `<id>_tmp`,
+# затем /root/untmp.sh на панели убирает суффикс и перезапускает x-ui.
+PANEL_SSH_HOST = _env("XSISET_PANEL_SSH_HOST")
+PANEL_SSH_PORT = _int("XSISET_PANEL_SSH_PORT", 22)
+PANEL_SSH_USER = _env("XSISET_PANEL_SSH_USER", "root")
+PANEL_SSH_PASSWORD = _env("XSISET_PANEL_SSH_PASSWORD")
+PANEL_UNTMP_CMD = _env("XSISET_PANEL_UNTMP_CMD", "/root/untmp.sh")
 
 # --- признаки готовности -------------------------------------------------
 

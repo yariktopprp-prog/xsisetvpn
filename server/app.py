@@ -17,7 +17,6 @@ from urllib.parse import urlparse
 from flask import (
     Flask,
     Response,
-    abort,
     jsonify,
     request,
     send_from_directory,
@@ -28,6 +27,7 @@ import db
 import keyfile
 import panel
 import payments
+import secure
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 logging.getLogger("werkzeug").setLevel(logging.WARNING)
@@ -45,15 +45,16 @@ PUBLIC_FILES = {
     "privacy.html",
     "style.css",
     "script.js",
+    "theme-init.js",
     "404.html",
     "robots.txt",
 }
 
 CSP = (
     "default-src 'self'; "
-    "script-src 'self' 'unsafe-inline'; "
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
-    "font-src 'self' https://fonts.gstatic.com; "
+    "script-src 'self'; "
+    "style-src 'self' 'unsafe-inline'; "
+    "font-src 'self'; "
     "img-src 'self' data:; "
     "connect-src 'self'; "
     "base-uri 'none'; form-action 'self'; frame-ancestors 'none'; object-src 'none'"
@@ -67,8 +68,13 @@ _rate_lock = threading.Lock()
 
 
 def _ram_ip_hash() -> str:
-    forwarded = request.headers.get("X-Real-IP") or request.headers.get("X-Forwarded-For")
-    raw_ip = forwarded.split(",")[0].strip() if forwarded else (request.remote_addr or "unknown")
+    # X-Forwarded-For доверяем только за своим reverse-proxy (XSISET_TRUST_PROXY=1).
+    if config.TRUST_PROXY:
+        forwarded = request.headers.get("X-Forwarded-For") or request.headers.get("X-Real-IP")
+        raw_ip = forwarded.split(",")[0].strip() if forwarded else ""
+    else:
+        raw_ip = ""
+    raw_ip = raw_ip or (request.remote_addr or "unknown")
     return hmac.new(IP_HASH_SALT, raw_ip.encode("utf-8"), hashlib.sha256).hexdigest()[:16]
 
 
@@ -76,6 +82,10 @@ def _rate(name: str, key: str, limit: int, window: int) -> bool:
     bucket_key = f"{name}:{key}"
     now = time.monotonic()
     with _rate_lock:
+        # Периодически вычищаем устаревшие хэши, чтобы они не жили дольше окна.
+        if len(_buckets) > 512:
+            for expired in [k for k, q in _buckets.items() if not q or now - q[-1] > 600]:
+                _buckets.pop(expired, None)
         bucket = _buckets[bucket_key]
         while bucket and now - bucket[0] > window:
             bucket.popleft()
@@ -116,6 +126,7 @@ def _security_headers(response: Response) -> Response:
     response.headers.setdefault("Referrer-Policy", "no-referrer")
     response.headers.setdefault("X-Frame-Options", "DENY")
     response.headers.setdefault("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
+    response.headers.setdefault("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
     if request.path.startswith("/api/"):
         response.headers["Cache-Control"] = "no-store"
     return response
@@ -135,11 +146,17 @@ def privacy_page() -> Response:
     return send_from_directory(ROOT, "privacy.html")
 
 
+@app.get("/terms")
+@app.get("/terms.html")
+def terms_page() -> Response:
+    return send_from_directory(ROOT, "privacy.html")
+
+
 @app.get("/<path:name>")
 def static_file(name: str) -> Response:
     if name in PUBLIC_FILES:
         return send_from_directory(ROOT, name)
-    abort(404)
+    return jsonify({"ok": False, "error": "not_found"}), 404
 
 
 # --------------------------------- ЗАКАЗЫ --------------------------------
@@ -149,23 +166,42 @@ def _plan(plan_id: str) -> dict[str, Any] | None:
     return config.PLANS_BY_ID.get(plan_id)
 
 
+def _reveal(order: dict[str, Any], field: str, raw_token: str = "") -> str | None:
+    """Расшифровывает поле только в памяти; в БД остаётся шифротекст."""
+    return secure.reveal(order.get(field), raw_token, aad=order["id"])
+
+
+def _bind_key(order: dict[str, Any], raw_token: str) -> dict[str, Any]:
+    """После первого доступа с токеном перешифровывает ключ под ключ клиента (v2)."""
+    blob = order.get("key_sub_url")
+    if not raw_token or not secure.is_encrypted(blob) or secure.is_token_bound(blob):
+        return order
+    plain = secure.reveal(blob, "", aad=order["id"])
+    if not plain:
+        return order
+    bound = secure.encrypt_for_token(plain, raw_token, aad=order["id"])
+    db.update_key_blob(order["id"], bound)
+    updated = dict(order)
+    updated["key_sub_url"] = bound
+    return updated
+
+
 def _key_payload(order: dict[str, Any], raw_token: str) -> dict[str, Any] | None:
-    enc_url = order.get("key_sub_url")
-    if not enc_url:
-        return None
-    sub_url = db.decrypt_with_token(enc_url, raw_token)
+    sub_url = _reveal(order, "key_sub_url", raw_token)
     if not sub_url:
         return None
+    token_arg = f"?token={raw_token}&" if raw_token else "?"
     return {
         "sub_url": sub_url,
         "valid_until": order.get("key_valid_until"),
-        "download_url": f"/api/orders/{order['id']}/key.txt?token={raw_token}&lang={request.args.get('lang', 'ru')}",
+        "download_url": f"/api/orders/{order['id']}/key.txt{token_arg}lang={request.args.get('lang', 'ru')}",
     }
 
 
 def _order_payload(order: dict[str, Any], raw_token: str = "") -> dict[str, Any]:
     plan = _plan(order["plan_id"]) or {"months": 1}
     key = _key_payload(order, raw_token)
+    pay_url = _reveal(order, "pay_url") if order["status"] == "pending" else None
     return {
         "id": order["id"],
         "plan_id": order["plan_id"],
@@ -176,7 +212,7 @@ def _order_payload(order: dict[str, Any], raw_token: str = "") -> dict[str, Any]
         "status": order["status"],
         "method": order.get("method"),
         "created_at": order["created_at"],
-        "pay_url": order.get("pay_url") if order["status"] == "pending" else None,
+        "pay_url": pay_url,
         "key": key,
     }
 
@@ -184,45 +220,50 @@ def _order_payload(order: dict[str, Any], raw_token: str = "") -> dict[str, Any]
 _issue_lock = threading.Lock()
 
 
-def _issue_key(order: dict[str, Any], raw_token: str) -> dict[str, Any]:
+def _issue_key(order: dict[str, Any]) -> dict[str, Any]:
+    """Автономно выпускает ключ на нодах без зависимости от сессии клиента."""
     with _issue_lock:
         fresh = db.get_order(order["id"])
         if not fresh or fresh["status"] != "paid" or fresh.get("key_sub_url"):
             return fresh or order
 
-        plan = _plan(fresh["plan_id"]) or {"days": 30}
+        plan = _plan(fresh["plan_id"]) or {"days": 30, "months": 1}
         try:
-            issued = panel.create_client(plan["days"], fresh["id"])
+            issued = panel.create_client(plan["days"], fresh["id"], plan.get("months"))
         except panel.PanelError as exc:
-            log.error("key issue failed for %s: %s", fresh["id"], exc)
+            log.error("Сбой создания клиента для %s: %s", fresh["id"], exc)
             return db.get_order(fresh["id"]) or fresh
 
         valid_until = db.now_dt() + timedelta(days=plan["days"])
         db.set_key(
             fresh["id"],
-            raw_token=raw_token,
             key_sub_url=issued["key_sub_url"],
             valid_until=valid_until.replace(microsecond=0).isoformat(),
         )
         return db.get_order(fresh["id"]) or fresh
 
 
-def _refresh(order: dict[str, Any], raw_token: str = "") -> dict[str, Any]:
-    if order["status"] == "pending" and order.get("provider_id"):
-        try:
-            status = payments.invoice_status(order["method"], order["provider_id"])
-        except payments.PaymentError as exc:
-            log.warning("payment check failed for %s: %s", order["id"], exc)
-            return order
+def _refresh(order: dict[str, Any]) -> dict[str, Any]:
+    if order["status"] == "pending":
+        provider_id = _reveal(order, "provider_id")
+        if provider_id:
+            try:
+                status = payments.invoice_status(order["method"], provider_id)
+            except payments.PaymentError as exc:
+                log.warning("Ошибка проверки статуса счёта %s: %s", order["id"], exc)
+                return order
+            except Exception as exc:  # чужая/повреждённая запись не должна ломать сверку
+                log.warning("Сбой проверки счёта %s: %s", order["id"], exc)
+                return order
 
-        if status in payments.PAID_STATUSES:
-            db.mark_paid(order["id"], order["provider_id"])
-        elif status in payments.FAILED_STATUSES:
-            db.mark_failed(order["id"], status)
-        order = db.get_order(order["id"]) or order
+            if status in payments.PAID_STATUSES:
+                db.mark_paid(order["id"], provider_id)
+            elif status in payments.FAILED_STATUSES:
+                db.mark_failed(order["id"], status)
+            order = db.get_order(order["id"]) or order
 
-    if order["status"] == "paid" and not order.get("key_sub_url") and raw_token:
-        order = _issue_key(order, raw_token)
+    if order["status"] == "paid" and not order.get("key_sub_url"):
+        order = _issue_key(order)
 
     return order
 
@@ -264,7 +305,8 @@ def plans() -> Response:
 
 @app.post("/api/orders")
 def create_order() -> tuple[Response, int] | Response:
-    if not _rate("order", _ram_ip_hash(), 30, 600):
+    ip_hash = _ram_ip_hash()
+    if not _rate("order", ip_hash, 30, 600):
         return _api_error(429, "too_many_orders")
 
     body = _json_body()
@@ -293,7 +335,7 @@ def create_order() -> tuple[Response, int] | Response:
     try:
         invoice = payments.create_invoice(order, method, asset)
     except payments.PaymentError as exc:
-        log.error("invoice failed for %s: %s", order["id"], exc)
+        log.error("Не удалось создать счёт для заказа %s: %s", order["id"], exc)
         db.mark_failed(order["id"], "invoice_failed")
         return _api_error(502, "invoice_failed")
 
@@ -322,6 +364,10 @@ def order_status(order_id: str) -> Response:
     if not order_id.isalnum() or len(order_id) > 40:
         return _api_error(400, "bad_order_id")
 
+    ip_hash = _ram_ip_hash()
+    if not _rate("order_poll", f"{ip_hash}:{order_id}", 90, 60):
+        return _api_error(429, "too_many_requests")
+
     raw_token = request.args.get("token", "")
     order = db.get_order(order_id)
     if not order:
@@ -329,7 +375,8 @@ def order_status(order_id: str) -> Response:
     if not db.verify_order_token(order, raw_token):
         return _api_error(403, "forbidden")
 
-    order = _refresh(order, raw_token)
+    order = _refresh(order)
+    order = _bind_key(order, raw_token)
     return jsonify({"ok": True, "order": _order_payload(order, raw_token)})
 
 
@@ -349,22 +396,30 @@ def cancel_order(order_id: str) -> tuple[Response, int] | Response:
 
 @app.get("/api/orders/<order_id>/key.txt")
 def download_key(order_id: str) -> Response:
+    if not order_id.isalnum() or len(order_id) > 40:
+        return _api_error(400, "bad_order_id")
+
+    ip_hash = _ram_ip_hash()
+    if not _rate("key_dl", f"{ip_hash}:{order_id}", 15, 60):
+        return _api_error(429, "too_many_requests")
+
     raw_token = request.args.get("token", "")
     order = db.get_order(order_id)
     if not order:
-        abort(404)
+        return _api_error(404, "order_not_found")
     if not db.verify_order_token(order, raw_token):
         return _api_error(403, "forbidden")
 
-    decrypted_url = db.decrypt_with_token(order.get("key_sub_url"), raw_token)
-    if not decrypted_url:
+    sub_url = _reveal(order, "key_sub_url", raw_token)
+    if not sub_url:
         return _api_error(409, "key_not_ready")
 
-    order_copy = dict(order)
-    order_copy["key_sub_url"] = decrypted_url
+    order = _bind_key(order, raw_token)
+    order = dict(order)
+    order["key_sub_url"] = sub_url
 
     lang = "en" if request.args.get("lang") == "en" else "ru"
-    text = keyfile.build_key_text(order_copy, lang)
+    text = keyfile.build_key_text(order, lang)
     filename = f"xsiset-vpn-{order_id}.txt"
     return Response(
         text,
@@ -399,7 +454,7 @@ def _reconcile_loop() -> None:
                 db.purge_old_orders(hours=24)
                 last_purge = now
         except Exception:
-            log.exception("payment reconcile failed")
+            log.exception("Сбой фонового процесса сверки")
 
 
 def _start_background() -> None:

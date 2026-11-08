@@ -1,71 +1,70 @@
-"""Формирование содержимого .txt файла с ключом доступа."""
+"""Генерация текстового файла xsiset-vpn-{id}.txt с человекопонятной датой."""
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Any
 
-import config
-from db import parse_dt
+
+def _format_date(val: str | None) -> str:
+    if not val:
+        return "—"
+    try:
+        dt = datetime.fromisoformat(val.replace("Z", "+00:00"))
+        return dt.strftime("%d.%m.%Y")
+    except Exception:
+        return str(val)
 
 
-def _fmt(value: str | None) -> str:
-    parsed = parse_dt(value)
-    return parsed.strftime("%d.%m.%Y") if parsed else "—"
+RU_TEMPLATE = """# xsiset vpn · Конфигурация доступа
+# Заказ: {order_id}
+# Действует до: {valid_until}
+# ----------------------------------------------------------------------
+
+Ваша ссылка-подписка (VLESS Reality):
+{sub_url}
+
+# Инструкция по подключению:
+# 1. Скопируйте ссылку выше.
+# 2. Установите клиент для вашей платформы:
+#    - iOS: Streisand, FoXray, V2Box
+#    - Android: v2rayNG, Happ
+#    - Windows: v2rayN, Nekoray
+#    - macOS: FoXray, V2Box
+# 3. В приложении выберите «Добавить подписку» (Add Subscription) и вставьте ссылку.
+# 4. Обновите подписку — в списке появятся все 5 европейских серверов,
+#    включая выделенный узел обхода списков.
+#
+# Поддержка: https://t.me/hkpde
+"""
+
+EN_TEMPLATE = """# xsiset vpn · Access Configuration
+# Order: {order_id}
+# Valid until: {valid_until}
+# ----------------------------------------------------------------------
+
+Your subscription link (VLESS Reality):
+{sub_url}
+
+# Connection guide:
+# 1. Copy the link above.
+# 2. Install a client for your platform:
+#    - iOS: Streisand, FoXray, V2Box
+#    - Android: v2rayNG, Happ
+#    - Windows: v2rayN, Nekoray
+#    - macOS: FoXray, V2Box
+# 3. In the application, select "Add Subscription" and paste the link.
+# 4. Update the subscription — all 5 European servers will appear in your list,
+#    including the dedicated whitelist bypass node.
+#
+# Support: https://t.me/hkpde
+"""
 
 
 def build_key_text(order: dict[str, Any], lang: str = "ru") -> str:
-    plan = config.PLANS_BY_ID.get(order["plan_id"], {})
-    months = plan.get("months", order.get("months", 1))
-    valid_until = order.get("key_valid_until")
-    sub_url = order.get("key_sub_url") or ""
-    order_id = order["id"]
-    support = f"@{config.BOT_USERNAME}"
-    now_utc = datetime.now(timezone.utc).strftime("%d.%m.%Y %H:%M")
-
-    if lang == "en":
-        lines = [
-            "xsiset vpn — access key",
-            "=" * 46,
-            "",
-            f"Order ID:     {order_id}",
-            f"Plan:         {months} month(s)",
-            f"Valid until:  {_fmt(valid_until)}",
-            "",
-            "Your subscription link (copy the entire line):",
-            "",
-            sub_url,
-            "",
-            "How to connect:",
-            "1. Install Happ, Streisand, v2rayNG or FoXray.",
-            "2. Tap 'Add subscription' and paste this link.",
-            "3. Update subscription, select a location and connect.",
-            "",
-            f"Support: {support}",
-            f"Generated: {now_utc} UTC",
-            "",
-        ]
-        return "\n".join(lines)
-
-    lines = [
-        "xsiset vpn — ключ доступа",
-        "=" * 46,
-        "",
-        f"Заказ:        {order_id}",
-        f"Тариф:        {months} мес.",
-        f"Действует до: {_fmt(valid_until)}",
-        "",
-        "Ссылка-подписка (скопируйте строку целиком):",
-        "",
-        sub_url,
-        "",
-        "Инструкция по подключению:",
-        "1. Установите приложение Happ (iOS / Android), Streisand, v2rayNG или FoXray.",
-        "2. Выберите «Добавить подписку» и вставьте ссылку выше.",
-        "3. Обновите список серверов и нажмите кнопку подключения.",
-        "",
-        f"Поддержка: {support}",
-        f"Файл сформирован: {now_utc} UTC",
-        "",
-    ]
-    return "\n".join(lines)
+    template = EN_TEMPLATE if lang == "en" else RU_TEMPLATE
+    return template.format(
+        order_id=order.get("id", "—"),
+        valid_until=_format_date(order.get("key_valid_until")),
+        sub_url=order.get("key_sub_url", "—"),
+    )

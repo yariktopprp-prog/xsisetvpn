@@ -24,6 +24,7 @@
       'nav.pricing': 'Тарифы',
       'nav.faq': 'Вопросы',
       'nav.cta': 'Подключиться',
+      'nav.support': 'Поддержка',
 
       'hero.live': '5 серверов онлайн',
       'hero.badge': 'обход белых списков',
@@ -95,10 +96,12 @@
       'co.plategaSub': 'Карта, СБП',
       'co.asset': 'Монета',
       'co.consentText': 'Я согласен с',
-      'co.consentLink': 'условиями сервиса и политикой конфиденциальности',
+      'co.termsLink': 'условиями сервиса',
+      'co.and': 'и',
+      'co.privacyLink': 'политикой конфиденциальности',
       'co.payNow': 'Перейти к оплате',
       'co.creating': 'Создаём заказ и счёт…',
-      'co.consentNeeded': 'Необходимо согласие с условиями.',
+      'co.consentNeeded': 'Необходимо подтвердить согласие с условиями.',
       'co.payUnavailable': 'Способ оплаты временно недоступен.',
       'co.invoiceFailed': 'Не удалось выставить счёт. Попробуйте другой способ.',
       'co.error': 'Произошла ошибка. Попробуйте ещё раз.',
@@ -133,6 +136,7 @@
       'co.install': 'Открыть подписку',
       'co.download': 'Файл с ключом (.txt)',
       'co.copy': 'Скопировать ссылку',
+      'co.support': 'Поддержка',
       'co.copied': 'Ссылка-ключ скопирована в буфер обмена.',
       'co.copyFailed': 'Выделите и скопируйте ссылку вручную.',
       'co.newOrder': 'Купить ещё один ключ',
@@ -160,7 +164,10 @@
       'cta.title': 'Подключиться',
       'cta.text': 'Выберите тариф и оплатите на сайте. Если возникнут вопросы, напишите в поддержку.',
       'cta.bot': 'Открыть @xsisetvpnbot',
+      'cta.support': 'Поддержка @hkpde',
+      'ftr.support': 'Поддержка',
       'ftr.mail': 'Почта',
+      'ftr.terms': 'Условия',
       'ftr.privacy': 'Политика'
     },
 
@@ -181,6 +188,7 @@
       'nav.pricing': 'Pricing',
       'nav.faq': 'FAQ',
       'nav.cta': 'Get started',
+      'nav.support': 'Support',
 
       'hero.live': '5 servers online',
       'hero.badge': 'whitelist bypass',
@@ -192,7 +200,41 @@
       'term.state': '5 servers',
 
       'servers.title': 'Servers in Europe',
-      'servers.text': 'One plan covers all five servers. No accounts required.',
+      'servers.text': 'One plan covers all five nodes. Dedicated server for whitelist bypass.',
+      'servers.nl': 'Netherlands',
+      'servers.nl.d': 'Direct internet access through the Netherlands.',
+      'servers.se': 'Sweden',
+      'servers.se.d': 'Two separate servers in Sweden.',
+      'servers.de': 'Germany',
+      'servers.de.d': 'Direct internet access through Germany.',
+      'servers.wl': 'Whitelist bypass',
+      'servers.wl.d': 'For networks where regular VPNs are blocked by whitelist rules.',
+      'servers.one': '1 server',
+      'servers.two': '2 servers',
+      'node.online': 'available',
+
+      'feat.title': 'All on the site',
+      'feat.text': 'Choose a plan, pay, receive the key and support — no middleman.',
+      'feat.pay.t': 'Card & Crypto',
+      'feat.pay.d': 'CryptoBot: USDT, TRX, TON. Platega: bank cards & SBP. The invoice is generated on site.',
+      'feat.auto.t': 'Instant key',
+      'feat.auto.d': 'After payment the system provisions VLESS access across all five nodes automatically.',
+      'feat.renew.t': 'Key file & 1-click setup',
+      'feat.renew.d': 'Download a .txt file with full instructions or import the link into your app.',
+      'feat.help.t': 'Support',
+      'feat.help.d': 'Setup assistance in @xsisetvpnbot.',
+
+      'how.title': 'Three steps',
+      'how.text': 'From choosing a plan to a working connection in a couple of minutes.',
+      'how.s1.t': 'Choose a plan',
+      'how.s1.d': '1, 3, 6 or 12 months. All five servers included.',
+      'how.s2.t': 'Pay on site',
+      'how.s2.d': 'CryptoBot or Platega: card, SBP, USDT, TRX, TON.',
+      'how.s3.t': 'Install your key',
+      'how.s3.d': 'Click "Open subscription" to import into client or save the .txt file.',
+
+      'price.title': 'Pricing',
+      'price.text': 'One plan covers all five servers. No accounts or registrations required.',
       'plan.m1': '1 month',
       'plan.m1.per': '100 ₽ per month',
       'plan.m1.note': 'Billed monthly',
@@ -217,11 +259,13 @@
       'co.cryptoSub': 'USDT, TRX, TON',
       'co.plategaSub': 'Card, SBP',
       'co.asset': 'Coin',
-      'co.consentText': 'I agree to the',
-      'co.consentLink': 'terms of service and privacy policy',
+      'co.consentText': 'I agree with',
+      'co.termsLink': 'terms of service',
+      'co.and': 'and',
+      'co.privacyLink': 'privacy policy',
       'co.payNow': 'Proceed to payment',
       'co.creating': 'Creating invoice…',
-      'co.consentNeeded': 'Please accept the terms.',
+      'co.consentNeeded': 'Please confirm agreement with terms of service.',
       'co.payUnavailable': 'Payment method is temporarily unavailable.',
       'co.invoiceFailed': 'Failed to create invoice.',
       'co.error': 'An error occurred. Please try again.',
@@ -238,8 +282,8 @@
       'co.plan': 'Plan',
       'co.sum': 'Total',
       'co.validUntil': 'Valid until',
-      'co.payHint': 'Complete the payment on the opened page. The status will update automatically.',
-      'co.issuing': 'Payment received. Issuing your VLESS key…',
+      'co.payHint': 'Complete payment on the provider page. Status updates automatically.',
+      'co.issuing': 'Payment confirmed. Issuing your VLESS key…',
       'co.openPay': 'Go to payment',
       'co.check': 'Check payment',
       'co.cancelPay': 'Cancel order',
@@ -256,6 +300,7 @@
       'co.install': 'Open subscription',
       'co.download': 'Key file (.txt)',
       'co.copy': 'Copy link',
+      'co.support': 'Support',
       'co.copied': 'Key link copied to clipboard.',
       'co.copyFailed': 'Please copy the key manually.',
       'co.newOrder': 'Buy another key',
@@ -283,7 +328,10 @@
       'cta.title': 'Get connected',
       'cta.text': 'Choose a plan and pay on the site. If you need help, contact support.',
       'cta.bot': 'Open @xsisetvpnbot',
+      'cta.support': 'Support @hkpde',
+      'ftr.support': 'Support',
       'ftr.mail': 'Email',
+      'ftr.terms': 'Terms',
       'ftr.privacy': 'Privacy'
     }
   };
@@ -340,6 +388,19 @@
     if (d['meta.title']) document.title = d['meta.title'];
     const desc = document.querySelector('meta[name="description"]');
     if (desc && d['meta.desc']) desc.setAttribute('content', d['meta.desc']);
+
+    // Переводим уже показанные статусные сообщения, если они есть в словаре.
+    [el.checkoutStatus, el.payStatus, el.doneStatus].forEach(function (node) {
+      if (!node || !node.textContent) return;
+      const current = node.textContent.trim();
+      const source = I18N.ru;
+      for (const key in source) {
+        if (source[key] === current && d[key]) {
+          node.textContent = d[key];
+          break;
+        }
+      }
+    });
 
     try { localStorage.setItem(LANG_KEY, code); } catch (e) { }
 
@@ -548,19 +609,13 @@
     return data || {};
   }
 
-  function copyText(text, statusNode) {
-    if (!text) return;
-    const done = function () { setStatus(statusNode, t('co.copied'), 'ok'); };
-    const fail = function () { setStatus(statusNode, t('co.copyFailed'), 'error'); };
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(done).catch(fail);
-      return;
-    }
+  function fallbackCopy(text, done, fail) {
     const area = document.createElement('textarea');
     area.value = text;
     area.style.position = 'fixed';
     area.style.opacity = '0';
     document.body.appendChild(area);
+    area.focus();
     area.select();
     try {
       document.execCommand('copy') ? done() : fail();
@@ -568,6 +623,20 @@
       fail();
     }
     document.body.removeChild(area);
+  }
+
+  function copyText(text, statusNode) {
+    if (!text) return;
+    const done = function () { setStatus(statusNode, t('co.copied'), 'ok'); };
+    const fail = function () { setStatus(statusNode, t('co.copyFailed'), 'error'); };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(function () {
+        fallbackCopy(text, done, fail);
+      });
+    } else {
+      fallbackCopy(text, done, fail);
+    }
   }
 
   /* ---------------------- ЗАКАЗ ---------------------- */
@@ -706,6 +775,15 @@
     }
   }
 
+  function refreshDownload() {
+    if (!el.download || !state.order || !state.order.key) return;
+    const baseArg = state.token ? '?token=' + encodeURIComponent(state.token) + '&' : '?';
+    el.download.href = '/api/orders/' + encodeURIComponent(state.order.id) + '/key.txt' + baseArg + 'lang=' + langCode();
+    el.download.target = '_blank';
+    el.download.rel = 'noopener';
+    el.download.setAttribute('download', 'xsiset-vpn-' + state.order.id + '.txt');
+  }
+
   function showDone(order) {
     if (!order || !order.key) return;
     state.order = order;
@@ -720,19 +798,12 @@
     if (el.doneValid) el.doneValid.textContent = fmtDate(order.key.valid_until);
     if (el.doneKey) el.doneKey.textContent = order.key.sub_url;
 
-    const txtUrl = '/api/orders/' + encodeURIComponent(order.id) + '/key.txt' + tokenQuery() + '&lang=' + langCode();
-    if (el.download) {
-      el.download.href = txtUrl;
-      el.download.target = '_blank';
-      el.download.rel = 'noopener';
-      el.download.setAttribute('download', 'xsiset-vpn-' + order.id + '.txt');
-    }
+    refreshDownload();
 
     if (el.installBtn) {
       el.installBtn.href = order.key.sub_url;
       el.installBtn.target = '_blank';
       el.installBtn.rel = 'noopener';
-      el.installBtn.onclick = null;
     }
 
     setStatus(el.doneStatus, t('co.saved'), 'ok');
@@ -981,6 +1052,7 @@
       if (state.order.status === 'paid' && state.order.key) {
         if (el.donePlan) el.donePlan.textContent = planTitle(state.order.plan_id);
         if (el.doneValid) el.doneValid.textContent = fmtDate(state.order.key.valid_until);
+        refreshDownload();
       } else {
         fillPayment(state.order);
       }
@@ -988,7 +1060,7 @@
     applyPaymentAvailability();
   }
 
-  /* ---------------------- ПЛАШКА ПРИВАТНОСТИ (Mullvad / Apple Style) ---------------------- */
+  /* ---------------------- ПЛАШКА ПРИВАТНОСТИ ---------------------- */
 
   const PRIVACY_DISMISSED_KEY = 'xsisetvpn-privacy-notice';
   const privacyPill = document.getElementById('privacyNotice');

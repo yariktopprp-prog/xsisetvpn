@@ -39,6 +39,13 @@ def _iso_or_none(epoch: int | float | None) -> str | None:
         return None
 
 
+def _order_months(order: dict[str, Any]) -> int:
+    plan = config.PLANS_BY_ID.get(order.get("plan_id", ""))
+    if plan and "months" in plan:
+        return int(plan["months"])
+    return int(order.get("months", 1))
+
+
 # ------------------------------- CryptoBot -------------------------------
 
 
@@ -70,13 +77,14 @@ def _cryptobot(path: str, payload: dict[str, Any]) -> dict[str, Any]:
 
 def create_cryptobot(order: dict[str, Any], asset: str) -> dict[str, Any]:
     rub = order["amount"] / 100
+    months = _order_months(order)
     invoice = _cryptobot(
         "createInvoice",
         {
             "currency_type": "fiat",
             "fiat": "RUB",
             "amount": f"{rub:.2f}",
-            "description": f"xsiset vpn · {order['months']} мес · {order['id']}",
+            "description": f"xsiset vpn · {months} мес · {order['id']}",
             "payload": order["id"],
             "accepted_assets": asset,
             "allow_anonymous": True,
@@ -121,9 +129,10 @@ def create_platega(order: dict[str, Any]) -> dict[str, Any]:
         raise PaymentError("platega_not_configured")
 
     rub = int(order["amount"] // 100)
+    months = _order_months(order)
     payload: dict[str, Any] = {
         "paymentDetails": {"amount": rub, "currency": "RUB"},
-        "description": f"xsiset vpn · {order['months']} мес · {order['id']}",
+        "description": f"xsiset vpn · {months} мес · {order['id']}",
         "payload": order["id"],
     }
     if config.PLATEGA_METHODS:
